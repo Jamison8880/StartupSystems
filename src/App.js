@@ -100,12 +100,12 @@ render() {
 }
 
 
-
-async componentDidMount() {
-  const token = await firebase.auth().
-  currentUser.getIdToken()
-this.setState({data: token})
-}
+////HOW DO I GET TOKEN? 
+// async componentDidMount() {
+//   const token = await firebase.auth().
+//   currentUser.getIdToken()
+// this.setState({data: token})
+// }
 //----------------------------------------------------------
 // I.   LANDING PAGE
 //----------------------------------------------------------
