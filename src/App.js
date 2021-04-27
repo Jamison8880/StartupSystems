@@ -62,6 +62,7 @@ class SignInScreen extends React.Component
     );
                       }
   
+
   //5.1  ^^^^You can additionally save that user object in your React component's state so that you can use it later.
   // Not sure what this means?
   
@@ -80,25 +81,31 @@ render() {
     // hit command forward slash inside render to auto command
     if (!this.state.isSignedIn) {
       return (
+       
         <div>
-          <h1>My App</h1>
-          <p>Please sign-in:</p>
+        <h1 style={{textAlign: "center",  color: "Green"}}>Welcome to the Pain Questionaire</h1>
+        
           <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={firebase.auth()}/>
         </div>
       );
     }
     return (
       <div>
-        <h1>My App</h1>
-        <p>Welcome {firebase.auth().currentUser.email}! You are now signed-in!</p>
+         
           <SignedInComponent> </SignedInComponent>
-        <button onClick={() => firebase.auth().signOut()}>Sign-out</button>
+        
       </div>
     );
   }
 }
 
 
+
+async componentDidMount() {
+  const token = await firebase.auth().
+  currentUser.getIdToken()
+this.setState({data: token})
+}
 //----------------------------------------------------------
 // I.   LANDING PAGE
 //----------------------------------------------------------
@@ -123,22 +130,25 @@ function LandingPage()
 {
   return (
     <section className = "section">
-      <div className = "container has-text-centered">
-        Hello Username! You are now signed in. 
-        <h1>Questionaire</h1>
+      <div className = "Container1">
+        <h1 style={{color: "Green"}}>Welcome {firebase.auth().currentUser.email}!</h1>
+        <p style = {{textAlign: "center"}} > You are now signed-in. Please fill in the questions below</p>
+      
+        <h1 style = {{textAlign: "center"}}  >Pain Questionaire</h1>
 
-        <h3 id="demo">Question 1: Where is your pain located?</h3>
+        <h3 id="demo" style = {{color: "blue"}}>Question 1: Where is your pain located?</h3>
         <input id = "Pain Location" />  
       
-        <h3 id="demo">Question 2: Where does your pain radiate to?</h3>
+        <h3 id="demo" style = {{color: "blue"}}>Question 2: Where does your pain radiate to?</h3>
         <input id = "Radiation Location" />  
        
-        <h3 id="demo">Question 3: How Severe is your pain?</h3>
+        <h3 id="demo" style = {{color: "blue"}}>Question 3: How Severe is your pain?</h3>
         <input id = "Pain Severity" />
 <p></p>  
-<button> Return</button>
-<button> Submit</button>
 
+
+<button onClick={() => firebase.auth().signOut()}>Sign-out</button>
+<button> Submit</button>
       </div>
     </section>
   )
