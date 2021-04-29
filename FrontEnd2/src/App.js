@@ -1,7 +1,7 @@
 import './App.css';
 
-import React from 'react';
-
+import React, { useState } from "react";
+import axios from 'axios'
 
 //----------------------------------------------------------
 //Following Steps from Canvas: 
@@ -21,6 +21,8 @@ const config = {
   apiKey: "AIzaSyBM1b1wpI20J2BWg_u2mO7I5WxEo1SA6jo",
   authDomain: "jsfirebaseproject-c8bde.firebaseapp.com",
 };
+ 
+ 
 
 // Initialize Firebase
 if (firebase.apps.length === 0) {
@@ -51,17 +53,23 @@ class SignInScreen extends React.Component
           signInSuccessWithAuthResult: () => false
         }
     };
- 
+
+
 //----------------------------------------------------------
 // 5.) A listener is created that listens for changes in sign in state from Firebase, 
 // and updates your React component state with the new value
 //----------------------------------------------------------
-  componentDidMount() {
+  async componentDidMount() {
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
         (user) => this.setState({isSignedIn: !!user})
     );
+
+    
+     // this.setState({data:token})
                       }
-  
+  // async componentDidMount(){
+
+  // }
 
   //5.1  ^^^^You can additionally save that user object in your React component's state so that you can use it later.
   // Not sure what this means?
@@ -82,18 +90,21 @@ render() {
     if (!this.state.isSignedIn) {
       return (
        
+
         <div>
-        <h1 style={{textAlign: "center",  color: "Green"}}>Welcome to the Pain Questionaire</h1>
         
+        <h1 style={{textAlign: "center",  color: "Green"}}>Welcome to the Pain Questionaire</h1>
           <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={firebase.auth()}/>
         </div>
       );
     }
     return (
       <div>
-         
-          <SignedInComponent> </SignedInComponent>
         
+    
+
+          <SignedInComponent> </SignedInComponent>
+
       </div>
     );
   }
@@ -102,68 +113,169 @@ render() {
 
 ////HOW DO I GET TOKEN? 
 // async componentDidMount() {
-//   const token = await firebase.auth().
-//   currentUser.getIdToken()
-// this.setState({data: token})
+//   //const token = await firebase.auth().
+//   const token = await firebase.auth().currentUser.getIdToken()
+
+  //currentUser.getIdToken()
+//this.setState({data: token})
 // }
 //----------------------------------------------------------
-// I.   LANDING PAGE
-//----------------------------------------------------------
-function LandingPage() 
-{
-  return (
-    
-    <div id = "Main Page" class = "main-div">
-        <title> LANDING PAGE</title>
-            <h3> Enter your Credentials</h3>
-            <input type = "email" placeholder = "Email..." id = "email_field" />
-            <input type = "password" placeholder = "Password..." id = "password_field"/>
-            <button onclick = "login()"> Login to Account </button>
-    </div>
-  )
-}
+
 
 //----------------------------------------------------------
 // II. SIGNED IN COMPONENT
 //----------------------------------------------------------
  function SignedInComponent() 
 {
+
+   let [Name, SetName ] =  useState(''); // parameter you pass into it is inital value (with empty strings, that is initial value. It returns 2 values: current value of state, and function that you can calll to update value of that state. ) 
+  let [Name2, SetName2] = useState(''); 
+  let [Name3, SetName3] = useState(''); 
+
+   function handleChange(event) {  
+    SetName(event.target.value);
+     }
+  function handleChange2(event) {  
+    SetName2(event.target.value);
+    }
+  function handleChange3(event) {  
+      SetName3(event.target.value);
+      }
+  
   return (
     <section className = "section">
       <div className = "Container1">
-        <h1 style={{color: "Green"}}>Welcome {firebase.auth().currentUser.email}!</h1>
+        <h1 style={{color: "Green"}}>Welcome {firebase.auth().currentUser.email}! </h1>
         <p style = {{textAlign: "center"}} > You are now signed-in. Please fill in the questions below</p>
+       
       
         <h1 style = {{textAlign: "center"}}  >Pain Questionaire</h1>
 
         <h3 id="demo" style = {{color: "blue"}}>Question 1: Where is your pain located?</h3>
-        <input id = "Pain Location" />  
+        <input 
+            id = "Pain Location"  
+            type="text"
+            value={Name}
+            onChange={handleChange}
+            placeholder="Enter text" />  
       
-        <h3 id="demo" style = {{color: "blue"}}>Question 2: Where does your pain radiate to?</h3>
-        <input id = "Radiation Location" />  
+        <h3 id="demo2" style = {{color: "blue"}}>Question 2: Where does your pain radiate to?</h3>
+        <input 
+            id = "Radiation Location" 
+            type="text"
+            value={Name2}
+            onChange={handleChange2}
+            //onChange= {(event) => SetName2(event.target.value)}
+            //for event -look up mozilla documentation to see all sub-variables. 
+            placeholder="Enter text" />   
        
-        <h3 id="demo" style = {{color: "blue"}}>Question 3: How Severe is your pain?</h3>
-        <input id = "Pain Severity" />
+        <h3 id="demo3" style = {{color: "blue"}}>Question 3: How Severe is your pain?</h3>
+        <input
+            id = "Pain Severity" 
+            type="text"
+            value={Name3}
+            onChange={handleChange3}
+            placeholder="Enter text" />   
+
+          
 <p></p>  
 
+{/* DISPLAY LOCATION OF PAIN ON UI */}
+<div style = {{   border: '1px solid black', display: "inline-grid", paddingLeft: '50px', paddingRight: '50px'}}> 
+<h1> Summary for Doctor:</h1>
 
+<p> Patient's pain is located on: 
+  <span style= {{color:'blue'}}> {Name} </span> <br></br>
+  and radiates to:
+  <span style= {{color:'blue'}}> {Name2} </span>
+  <br></br> 
+  Severity is described as: 
+  <span style= {{color:'blue'}}> {Name3} </span>  
+  </p>
+  </div>
+<p></p>
 <button onClick={() => firebase.auth().signOut()}>Sign-out</button>
-<button> Submit</button>
-      </div>
+<button onClick={() => SubmitData(Name, Name2, Name3)}> Submit My Results</button> 
+ 
+ 
+     </div>
+<div> 
+ 
+<h1 style = {{color: "red"}}> Some Data from the Backend: </h1>
+<p> </p>
+
+
+<button style = {{backgroundColor:"red", color: "white", padding: "15px", fontSize: "1em"  }} onClick={() => GetTheData()}> Click Here for BackEnd Data</button> 
+
+<p>  </p>
+</div>
+
+
+
+
     </section>
   )
 }
 
+
+// {const token = await firebase.auth().currentUser.getIdToken()}
+//var LocationOfPain = document.getElementById("demo1").value;
+
+async function SubmitData(Name, Name2, Name3) {
+  
+  //const token = await firebase.auth().currentUser.getIdToken()
+  //console.log(token)
+
+  //alert('Variable is ' +Name );
+  //alert('Variable is ' +token ); //only need plus for concatenating var with string. 
+  
+  
+  // TO LOCAL ENVIRONMENT: 
+  //axios.post('http://localhost:4000/dev/ReceivingDataFromFrontEnd', 
+  //DEPLOYED API: 
+  axios.post('https://ea0x278auf.execute-api.us-east-1.amazonaws.com/dev/ReceivingDataFromFrontEnd', 
+  {
+    PainLoc: Name,
+    RadiationLoc: Name2,
+    Severity: Name3
+  });
+  alert('Data Submitted!')
+  }
+
+  function GetTheData() {
+    axios.get('https://ea0x278auf.execute-api.us-east-1.amazonaws.com/dev/SendingDataToFrontEnd').then(BackEndData => {
+
+    console.log(BackEndData.data);
+    //alert(BackEndData.data);
+var UserName = BackEndData.data.username
+var Paragraph = BackEndData.data.paragraph
+var Numbers = BackEndData.data.numbers
+alert("Backend.data.username is: " +UserName + "\r\n Backend.data.paragraph is: "   + Paragraph+ "\r\n Backend.data.numbers is: " +Numbers) 
+  });
+    }
+
+
+
+
+
+
+//Submit Function has to get the data. 
+//fetch(URL, put/post/ options)
+//simplest use of fetch takes in one argument - the path to the resource you want to fetch - and returns a promise containing the response 
+//when the button clicks, there should be a string that looks like: 
+//  fetch mdn in google.
+
+
 //----------------------------------------------------------
 // III.   OTHER FUNCTIONS: 
 //----------------------------------------------------------
-function login() {
+// function login() {
 
-  var userEmail = document.getElementById("email_field").value;
-  var userPass = document.getElementById("password_field").value; 
-  window.alert(userEmail + ' ' + userPass)
+//   var userEmail = document.getElementById("email_field").value;
+//   var userPass = document.getElementById("password_field").value; 
+//   window.alert(userEmail + ' ' + userPass)
   
-  }
+//   }
 
 export default SignInScreen;
 //export default SignedInComponent
@@ -210,3 +322,22 @@ const firebaseConfig = {
 }
 
 */
+
+
+
+
+// I.   LANDING PAGE
+//----------------------------------------------------------
+// function LandingPage() 
+// {
+//   return (
+    
+//     <div id = "Main Page" class = "main-div">
+//         <title> LANDING PAGE</title>
+//             <h3> Enter your Credentials</h3>
+//             <input type = "email" placeholder = "Email..." id = "email_field" />
+//             <input type = "password" placeholder = "Password..." id = "password_field"/>
+//             <button onclick = "login()"> Login to Account </button>
+//     </div>
+//   )
+// }

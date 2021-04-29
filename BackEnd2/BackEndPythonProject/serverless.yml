@@ -25,50 +25,35 @@ provider:
   runtime: python3.8
   lambdaHashingVersion: 20201221
 
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
-
-# you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
-
-# you can define service wide environment variables here
-#  environment:
-#    variable1: value1
-
-# you can add packaging information here
-#package:
-#  patterns:
-#    - '!exclude-me.py'
-#    - '!exclude-me-dir/**'
-#    - include-me.py
-#    - include-me-dir/**
-
+#this function named Hello will respond to an http event, for a path called hello,
+#and for a method called post
 functions:
-  hello:
+  hello: #Can i close this ???
     handler: handler.hello
-    #this function named Hello will respond to an http event, for a path called hello,
-    #and for a method called post
     events:
       - http:
           path: /
           method: ANY
-      - http:
+      - http: #Why are there two https listed?
           path: /{proxy+}
           method: ANY
+
+  SendingDataToFrontEnd:
+    handler: handler.SendingDataToFrontEnd
+    events:
+      - http:
+          path: SendingDataToFrontEnd
+          method: GET
+
+  #Does it matter waht I name all of these?
+  ReceivingDataFromFrontEnd:
+    handler: handler.ReceivingDataFromFrontEnd
+    events:
+      - http:
+          path: ReceivingDataFromFrontEnd
+          method: POST
+
+          #What are the "Official" terms that can go after http. Can i just make anything up?
 plugins:
   - serverless-offline
 #    The following are a few example events you can configure
